@@ -1,11 +1,12 @@
 import React, { Component } from "react";
-import { getMovies } from "../services/fakeMovieService";
+import { getMovies, deleteMovie } from "../services/fakeMovieService";
 import { getGenres } from "../services/fakeGenreService";
 import ListGroup from "./common/listGroup";
 import Pagination from "./common/pagination";
 import { paginate } from "../utils/paginate";
 import MoviesTable from "./moviesTable";
 import _ from "lodash";
+import { Link } from "react-router-dom";
 
 export class Movies extends Component {
   state = {
@@ -26,7 +27,7 @@ export class Movies extends Component {
   };
 
   handleDelete = (movie) => {
-    const movies = this.state.movies.filter((m) => m._id !== movie._id);
+    const movies = deleteMovie(movie);
     this.setState({ movies });
   };
 
@@ -73,11 +74,7 @@ export class Movies extends Component {
 
   render() {
     const { length: count } = this.state.movies;
-    const {
-      currentPage,
-      pageSize,
-      sortColumn,
-    } = this.state;
+    const { currentPage, pageSize, sortColumn } = this.state;
 
     if (count === 0) return <p>There are no movies in the database.</p>;
 
@@ -93,6 +90,13 @@ export class Movies extends Component {
           />
         </div>
         <div className="col">
+          <Link
+            to="/movies/new"
+            className="btn btn-primary"
+            style={{ marginBottom: 20 }}
+          >
+            New Movie
+          </Link>
           <p>Showing {totalCount} movies in the database.</p>
           <MoviesTable
             movies={movies}
